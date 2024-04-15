@@ -65,7 +65,7 @@ class DefectSet:
         return f"{self.defect_set}"
 
     def get_energy(self, debug=False):
-        return self.eval_function(self.defect_set, debug)
+        return self.eval_function(self.defect_set, debug)/len(self)
 
     def __copy__(self):
         my_copy = type(self)(self.eval_function)
@@ -78,6 +78,9 @@ class DefectSet:
 
     def __iter__(self):
         return iter(self.defect_set)
+
+    def __len__(self):
+        return len(self.defect_set)
 
 
 class EvalFunction:
