@@ -40,6 +40,18 @@ class DefectSet:
         self.defect_set.add(defect)
         return
 
+    def add_defect_to_nearest(self, defect: Defect, get_possible_moves):
+        possible_defects = [defect]
+        id = 0
+        while defect in self:
+            id += 1
+            if id >= len(possible_defects):
+                possible_defects.extend(get_possible_moves(possible_defects))
+            defect = possible_defects[id]
+        self.positions_set.add(defect.cords)
+        self.defect_set.add(defect)
+        return defect
+
     def remove_defect(self, defect: Defect):
         if defect not in self:
             raise ValueError(f"Trying to delete defect {defect}, that isn't in the set: {self}")
@@ -114,6 +126,12 @@ class Batch:
         for idx, member in enumerate(self.members):
             self.members[idx] = mutate_function(member)
 
+    def __copy__(self):
+        my_copy = type(self)(self.max_members)
+        my_copy.members = self.members.copy()
+        my_copy.preferred_percent = self.preferred_percent
+        my_copy.batch_type = self.batch_type
+        return my_copy
 
 class TopBatch(Batch):
     def __init__(self, max_members, preferred_percent=0.2):
